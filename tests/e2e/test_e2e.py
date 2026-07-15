@@ -1,6 +1,7 @@
 # tests/e2e/test_e2e.py
 
 import pytest  # Import the pytest framework for writing and running tests
+from playwright.sync_api import expect  # Auto-waiting assertions for async UI updates
 
 # The following decorators and functions define E2E tests for the FastAPI calculator application.
 
@@ -40,10 +41,10 @@ def test_calculator_add(page, fastapi_server):
     
     # Click the button that has the exact text "Add". This triggers the addition operation.
     page.click('button:text("Add")')
-    
-    # Use an assertion to check that the text within the result div (with id 'result') is exactly "Result: 15".
-    # This verifies that the addition operation was performed correctly and the result is displayed as expected.
-    assert page.inner_text('#result') == 'Result: 15'
+
+    # Wait for the async fetch to populate the result div, then assert its text is "Result: 15".
+    # expect() retries until the text appears, avoiding a race with the network round-trip.
+    expect(page.locator('#result')).to_have_text('Result: 15')
 
 @pytest.mark.e2e
 def test_calculator_divide_by_zero(page, fastapi_server):
@@ -66,8 +67,7 @@ def test_calculator_divide_by_zero(page, fastapi_server):
     
     # Click the button that has the exact text "Divide". This triggers the division operation.
     page.click('button:text("Divide")')
-    
-    # Use an assertion to check that the text within the result div (with id 'result') is exactly
-    # "Error: Cannot divide by zero!". This verifies that the application handles division by zero
-    # gracefully and displays the correct error message to the user.
-    assert page.inner_text('#result') == 'Error: Cannot divide by zero!'
+
+    # Wait for the async fetch to populate the result div, then assert the error message.
+    # expect() retries until the text appears, avoiding a race with the network round-trip.
+    expect(page.locator('#result')).to_have_text('Error: Cannot divide by zero!')
