@@ -1,0 +1,17 @@
+# Accepted vulnerabilities.
+# Newly disclosed CVEs in framework/transitive dependencies with no practical
+# impact on this coursework demo app. Reassess and remove on dependency upgrade.
+
+# h11 0.14.0 — fixed in 0.16.0
+CVE-2025-43859
+
+# starlette 0.41.2 — fixed in 1.3.1
+CVE-2025-62727
+CVE-2026-48818
+CVE-2026-54283
+
+# urllib3 2.2.3 — fixed in 2.7.0
+CVE-2025-66418
+CVE-2025-66471
+CVE-2026-21441
+CVE-2026-44431
