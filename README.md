@@ -1,4 +1,69 @@
-# 📦 Project Setup
+# 🧮 Module 11 — Calculations Model & Validation
+
+A FastAPI project that models arithmetic **calculations** with SQLAlchemy and validates
+them with Pydantic. A polymorphic `Calculation` model (Addition, Subtraction,
+Multiplication, Division) is created through a factory (`Calculation.create(...)`),
+persisted to PostgreSQL, and validated at the API boundary by Pydantic schemas
+(`CalculationCreate`, `CalculationResponse`).
+
+## 🐳 Docker Hub
+
+Published image (pushed automatically by CI on every successful `main` build):
+
+**https://hub.docker.com/r/susanchapas/module11_is601**
+
+```bash
+docker pull susanchapas/module11_is601:latest
+```
+
+## ▶️ Run the app locally
+
+```bash
+docker compose up --build          # web + PostgreSQL + pgAdmin
+# app  -> http://localhost:8000
+# docs -> http://localhost:8000/docs
+```
+
+## ✅ Running the tests
+
+Install dependencies first:
+
+```bash
+python3 -m venv venv
+source venv/bin/activate            # Windows: venv\Scripts\activate.bat
+pip install -r requirements.txt
+```
+
+**Unit + schema/model tests** (no database needed):
+
+```bash
+pytest tests/unit/ tests/integration/test_calculation.py tests/integration/test_calculation_schema.py
+```
+
+**Database integration tests** — need a reachable PostgreSQL. Start one and point
+`DATABASE_URL` at it (the tests **skip** automatically if no database is available):
+
+```bash
+docker run -d --name calc_pg \
+  -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=calculator_db \
+  -p 5432:5432 postgres:latest
+
+export DATABASE_URL="postgresql://postgres:postgres@localhost:5432/calculator_db"
+pytest tests/integration/          # calculation + user DB tests
+```
+
+**Everything at once:**
+
+```bash
+pytest                             # runs the full suite with coverage
+```
+
+The same tests run automatically in GitHub Actions against a PostgreSQL service
+container; on success the image is pushed to Docker Hub (see the link above).
+
+---
+
+# 📦 Environment Setup (first-time machine setup)
 
 ---
 
